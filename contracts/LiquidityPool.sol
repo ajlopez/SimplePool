@@ -11,5 +11,12 @@ contract LiquidityPool {
     constructor(ERC20 _token) public {
         token = _token;
     }
+    
+    function deposit(uint256 tokenAmount) public payable {
+        token.transferFrom(msg.sender, address(this), tokenAmount);
+        
+        tokenBalance += tokenAmount;
+        cryptoBalance += msg.value;
+    }
 }
 
