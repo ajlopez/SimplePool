@@ -8,6 +8,7 @@ contract('LiquidityPool', function (accounts) {
     
     const root = accounts[0];
     const alice = accounts[1];
+    const bob = accounts[2];
     
     beforeEach(async function () {
         token = await BasicToken.new('Token', 'TOK');
@@ -43,6 +44,25 @@ contract('LiquidityPool', function (accounts) {
         assert.equal(finalAliceTokenBalance, initialAliceTokenBalance - 1000);
         assert.equal(finalPoolBalance, initialPoolBalance + 1000000);
         assert.equal(finalPoolTokenBalance, initialPoolTokenBalance + 1000);
+    });
+    
+    it('buy tokens', async function () {
+        await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
+        await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
+
+        await liquidityPool.buyTokens({ from: bob, value: 1000000 });
+        
+        const bobTokens = Number(await token.balanceOf(bob));
+        const cryptoBalance = Number(await liquidityPool.cryptoBalance());
+        const tokenBalance = Number(await liquidityPool.tokenBalance());
+        const poolTokens = Number(await token.balanceOf(liquidityPool.address));
+        const poolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
+
+        assert.equal(bobTokens, 500);
+        assert.equal(poolTokens, 500);
+        assert.equal(poolBalance, 2000000);
+        assert.equal(cryptoBalance, 2000000);
+        assert.equal(tokenBalance, 500);
     });
 });
 

@@ -18,5 +18,18 @@ contract LiquidityPool {
         tokenBalance += tokenAmount;
         cryptoBalance += msg.value;
     }
+    
+    function buyTokens() public payable {
+        uint256 amount = msg.value;
+        
+        uint256 tokenAmount = tokenBalance -
+            tokenBalance * cryptoBalance 
+            / (cryptoBalance + amount);
+            
+        tokenBalance -= tokenAmount;
+        cryptoBalance += amount;
+        
+        token.transfer(msg.sender, tokenAmount);
+    }
 }
 
