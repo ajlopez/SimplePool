@@ -43,6 +43,8 @@ contract LiquidityPool {
             
         tokenBalance += tokenAmount;
         cryptoBalance -= amount;
+        
+        msg.sender.transfer(amount);
     }
 }
 

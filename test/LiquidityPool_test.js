@@ -70,6 +70,7 @@ contract('LiquidityPool', function (accounts) {
         await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
         await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
 
+        await token.approve(liquidityPool.address, 1000, { from: bob, gasPrice: 0 });
         await liquidityPool.sellTokens(1000, { from: bob });
         
         const bobTokens = Number(await token.balanceOf(bob));
