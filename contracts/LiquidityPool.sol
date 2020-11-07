@@ -13,6 +13,7 @@ contract LiquidityPool {
     }
     
     function deposit(uint256 tokenAmount) public payable {
+        // TODO require
         token.transferFrom(msg.sender, address(this), tokenAmount);
         
         tokenBalance += tokenAmount;
@@ -30,6 +31,18 @@ contract LiquidityPool {
         cryptoBalance += amount;
         
         token.transfer(msg.sender, tokenAmount);
+    }
+    
+    function sellTokens(uint256 tokenAmount) public {
+        // TODO require
+        token.transferFrom(msg.sender, address(this), tokenAmount);
+        
+        uint256 amount = cryptoBalance -
+            tokenBalance * cryptoBalance 
+            / (tokenBalance + tokenAmount);
+            
+        tokenBalance += tokenAmount;
+        cryptoBalance -= amount;
     }
 }
 

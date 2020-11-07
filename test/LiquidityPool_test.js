@@ -64,5 +64,25 @@ contract('LiquidityPool', function (accounts) {
         assert.equal(cryptoBalance, 2000000);
         assert.equal(tokenBalance, 500);
     });
+    
+    it('sell tokens', async function () {
+        await token.transfer(bob, 1000000);
+        await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
+        await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
+
+        await liquidityPool.sellTokens(1000, { from: bob });
+        
+        const bobTokens = Number(await token.balanceOf(bob));
+        const cryptoBalance = Number(await liquidityPool.cryptoBalance());
+        const tokenBalance = Number(await liquidityPool.tokenBalance());
+        const poolTokens = Number(await token.balanceOf(liquidityPool.address));
+        const poolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
+
+        assert.equal(bobTokens, 1000000 - 1000);
+        assert.equal(poolTokens, 2000);
+        assert.equal(poolBalance, 500000);
+        assert.equal(cryptoBalance, 500000);
+        assert.equal(tokenBalance, 2000);
+    });
 });
 
