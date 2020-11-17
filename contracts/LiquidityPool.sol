@@ -15,8 +15,7 @@ contract LiquidityPool {
     }
     
     function deposit(uint256 tokenAmount) public payable {
-        // TODO require
-        token.transferFrom(msg.sender, address(this), tokenAmount);
+        require(token.transferFrom(msg.sender, address(this), tokenAmount));
 
         if (tokenBalance == 0 && cryptoBalance == 0) {
             tokenBalance = tokenAmount;

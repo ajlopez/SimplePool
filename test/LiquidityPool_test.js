@@ -49,6 +49,26 @@ contract('LiquidityPool', function (accounts) {
             assert.equal(finalPoolTokenBalance, initialPoolTokenBalance + 1000);
         });
         
+        it('deposit rejected if less tokens are approved', async function () {
+            const initialAliceTokenBalance = Number(await token.balanceOf(alice));
+            const initialAliceBalance = Number(await web3.eth.getBalance(alice));
+            const initialPoolTokenBalance = Number(await token.balanceOf(liquidityPool.address));
+            const initialPoolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
+            
+            await token.approve(liquidityPool.address, 500, { from: alice, gasPrice: 0 });
+            await truffleAssert.reverts(liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 }));
+
+            const finalAliceTokenBalance = Number(await token.balanceOf(alice));
+            const finalAliceBalance = Number(await web3.eth.getBalance(alice));
+            const finalPoolTokenBalance = Number(await token.balanceOf(liquidityPool.address));
+            const finalPoolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
+            
+            assert.equal(finalAliceBalance, initialAliceBalance);
+            assert.equal(finalAliceTokenBalance, initialAliceTokenBalance);
+            assert.equal(finalPoolBalance, initialPoolBalance);
+            assert.equal(finalPoolTokenBalance, initialPoolTokenBalance);
+        });
+        
         it('two deposits', async function () {
             const initialAliceTokenBalance = Number(await token.balanceOf(alice));
             const initialAliceBalance = Number(await web3.eth.getBalance(alice));
