@@ -2,6 +2,8 @@
 const LiquidityPool = artifacts.require('LiquidityPool');
 const BasicToken = artifacts.require('BasicToken');
 
+const truffleAssert = require('truffle-assertions');
+
 contract('LiquidityPool', function (accounts) {   
     let liquidityPool;
     let token;
@@ -89,6 +91,28 @@ contract('LiquidityPool', function (accounts) {
             assert.equal(finalAliceTokenBalance, initialAliceTokenBalance - 1100);
             assert.equal(finalPoolBalance, initialPoolBalance + 1100000);
             assert.equal(finalPoolTokenBalance, initialPoolTokenBalance + 1100);
+        });
+        
+        it('second deposit with not enought tokens', async function () {
+            const initialAliceTokenBalance = Number(await token.balanceOf(alice));
+            const initialAliceBalance = Number(await web3.eth.getBalance(alice));
+            const initialPoolTokenBalance = Number(await token.balanceOf(liquidityPool.address));
+            const initialPoolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
+            
+            await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
+            await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
+            await token.approve(liquidityPool.address, 99, { from: alice, gasPrice: 0 });
+            await truffleAssert.reverts(liquidityPool.deposit(99, { value: 100000, from: alice, gasPrice: 0 }));
+
+            const finalAliceTokenBalance = Number(await token.balanceOf(alice));
+            const finalAliceBalance = Number(await web3.eth.getBalance(alice));
+            const finalPoolTokenBalance = Number(await token.balanceOf(liquidityPool.address));
+            const finalPoolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
+            
+            assert.equal(finalAliceBalance, initialAliceBalance - 1000000);
+            assert.equal(finalAliceTokenBalance, initialAliceTokenBalance - 1000);
+            assert.equal(finalPoolBalance, initialPoolBalance + 1000000);
+            assert.equal(finalPoolTokenBalance, initialPoolTokenBalance + 1000);
         });
     });
     

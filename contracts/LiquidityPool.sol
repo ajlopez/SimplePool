@@ -30,11 +30,13 @@ contract LiquidityPool {
             * msg.value
             / MANTISSA;
             
+        require(tokenDepositAmount <= tokenAmount);
+            
         tokenBalance += tokenDepositAmount;
         cryptoBalance += msg.value;
         
         if (tokenDepositAmount < tokenAmount)
-        token.transfer(msg.sender, tokenAmount - tokenDepositAmount);
+            token.transfer(msg.sender, tokenAmount - tokenDepositAmount);
     }
     
     function buyTokens() public payable {
