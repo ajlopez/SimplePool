@@ -8,6 +8,8 @@ contract LiquidityPool {
     uint256 public tokenBalance;
     uint256 public cryptoBalance;
     
+    uint256 constant public MANTISSA = 1e18;
+    
     constructor(ERC20 _token) public {
         token = _token;
     }
@@ -15,9 +17,24 @@ contract LiquidityPool {
     function deposit(uint256 tokenAmount) public payable {
         // TODO require
         token.transferFrom(msg.sender, address(this), tokenAmount);
+
+        if (tokenBalance == 0 && cryptoBalance == 0) {
+            tokenBalance = tokenAmount;
+            cryptoBalance = msg.value;
+            
+            return;
+        }
         
-        tokenBalance += tokenAmount;
+        uint256 tokenDepositAmount = tokenBalance * MANTISSA 
+            / cryptoBalance 
+            * msg.value
+            / MANTISSA;
+            
+        tokenBalance += tokenDepositAmount;
         cryptoBalance += msg.value;
+        
+        if (tokenDepositAmount < tokenAmount)
+        token.transfer(msg.sender, tokenAmount - tokenDepositAmount);
     }
     
     function buyTokens() public payable {
