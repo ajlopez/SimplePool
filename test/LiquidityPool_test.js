@@ -36,7 +36,14 @@ contract('LiquidityPool', function (accounts) {
             const initialPoolBalance = Number(await web3.eth.getBalance(liquidityPool.address));
             
             await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
-            await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
+            
+            const txresult = await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
+            
+            truffleAssert.eventEmitted(txresult, 'Deposit',
+                function (ev) {
+                    return ev.user.toLowerCase() ==  alice.toLowerCase();
+                }
+            );
 
             const finalAliceTokenBalance = Number(await token.balanceOf(alice));
             const finalAliceBalance = Number(await web3.eth.getBalance(alice));

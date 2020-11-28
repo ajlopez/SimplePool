@@ -10,6 +10,8 @@ contract LiquidityPool {
     
     uint256 constant public MANTISSA = 1e18;
     
+    event Deposit(address user, uint256 value, uint256 tokenAmount);
+    
     constructor(ERC20 _token) public {
         token = _token;
     }
@@ -20,6 +22,8 @@ contract LiquidityPool {
         if (tokenBalance == 0 && cryptoBalance == 0) {
             tokenBalance = tokenAmount;
             cryptoBalance = msg.value;
+            
+            emit Deposit(msg.sender, msg.value, tokenAmount);
             
             return;
         }
@@ -33,6 +37,8 @@ contract LiquidityPool {
             
         tokenBalance += tokenDepositAmount;
         cryptoBalance += msg.value;
+
+        emit Deposit(msg.sender, msg.value, tokenDepositAmount);
         
         if (tokenDepositAmount < tokenAmount)
             token.transfer(msg.sender, tokenAmount - tokenDepositAmount);
