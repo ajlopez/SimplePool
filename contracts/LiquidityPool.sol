@@ -61,8 +61,7 @@ contract LiquidityPool {
     }
     
     function sellTokens(uint256 tokenAmount) public {
-        // TODO require
-        token.transferFrom(msg.sender, address(this), tokenAmount);
+        require(token.transferFrom(msg.sender, address(this), tokenAmount));
         
         uint256 amount = cryptoBalance -
             tokenBalance * cryptoBalance 

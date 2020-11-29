@@ -207,6 +207,12 @@ contract('LiquidityPool', function (accounts) {
             assert.equal(cryptoBalance, 500000);
             assert.equal(tokenBalance, 2000);
         });
+        
+        it.only('cannot sell tokens without approve', async function () {
+            await token.transfer(bob, 1000000);
+
+            await truffleAssert.reverts(liquidityPool.sellTokens(1000, { from: bob }));
+        });
     });
 });
 
