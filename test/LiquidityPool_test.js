@@ -193,7 +193,16 @@ contract('LiquidityPool', function (accounts) {
             await token.transfer(bob, 1000000);
 
             await token.approve(liquidityPool.address, 1000, { from: bob, gasPrice: 0 });
-            await liquidityPool.sellTokens(1000, { from: bob });
+            
+            const txresult = await liquidityPool.sellTokens(1000, { from: bob });
+            
+            truffleAssert.eventEmitted(txresult, 'SellTokens',
+                function (ev) {
+                    return ev.user.toLowerCase() === bob.toLowerCase() &&
+                        Number(ev.value) === 500000 &&
+                        Number(ev.tokenAmount) === 1000;
+                }
+            );
             
             const bobTokens = Number(await token.balanceOf(bob));
             const cryptoBalance = Number(await liquidityPool.cryptoBalance());
@@ -208,7 +217,7 @@ contract('LiquidityPool', function (accounts) {
             assert.equal(tokenBalance, 2000);
         });
         
-        it.only('cannot sell tokens without approve', async function () {
+        it('cannot sell tokens without approve', async function () {
             await token.transfer(bob, 1000000);
 
             await truffleAssert.reverts(liquidityPool.sellTokens(1000, { from: bob }));

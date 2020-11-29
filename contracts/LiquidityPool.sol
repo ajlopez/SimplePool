@@ -12,6 +12,7 @@ contract LiquidityPool {
     
     event Deposit(address user, uint256 value, uint256 tokenAmount);
     event BuyTokens(address user, uint256 value, uint256 tokenAmount);
+    event SellTokens(address user, uint256 value, uint256 tokenAmount);
     
     constructor(ERC20 _token) public {
         token = _token;
@@ -71,6 +72,8 @@ contract LiquidityPool {
         cryptoBalance -= amount;
         
         msg.sender.transfer(amount);
+        
+        emit SellTokens(msg.sender, amount, tokenAmount);
     }
 }
 
