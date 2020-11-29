@@ -41,7 +41,9 @@ contract('LiquidityPool', function (accounts) {
             
             truffleAssert.eventEmitted(txresult, 'Deposit',
                 function (ev) {
-                    return ev.user.toLowerCase() ==  alice.toLowerCase();
+                    return ev.user.toLowerCase() === alice.toLowerCase() &&
+                        Number(ev.value) === 1000000 &&
+                        Number(ev.tokenAmount) === 1000;
                 }
             );
 
@@ -107,8 +109,17 @@ contract('LiquidityPool', function (accounts) {
             await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
             await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
             await token.approve(liquidityPool.address, 200, { from: alice, gasPrice: 0 });
-            await liquidityPool.deposit(200, { value: 100000, from: alice, gasPrice: 0 });
+            
+            const txresult = await liquidityPool.deposit(200, { value: 100000, from: alice, gasPrice: 0 });
 
+            truffleAssert.eventEmitted(txresult, 'Deposit',
+                function (ev) {
+                    return ev.user.toLowerCase() === alice.toLowerCase() &&
+                        Number(ev.value) === 100000 &&
+                        Number(ev.tokenAmount) === 100;
+                }
+            );
+            
             const finalAliceTokenBalance = Number(await token.balanceOf(alice));
             const finalAliceBalance = Number(await web3.eth.getBalance(alice));
             const finalPoolTokenBalance = Number(await token.balanceOf(liquidityPool.address));
@@ -155,7 +166,15 @@ contract('LiquidityPool', function (accounts) {
         });
         
         it('buy tokens', async function () {
-            await liquidityPool.buyTokens({ from: bob, value: 1000000 });
+            const txresult = await liquidityPool.buyTokens({ from: bob, value: 1000000 });
+            
+            truffleAssert.eventEmitted(txresult, 'BuyTokens',
+                function (ev) {
+                    return ev.user.toLowerCase() === bob.toLowerCase() &&
+                        Number(ev.value) === 1000000 &&
+                        Number(ev.tokenAmount) === 500;
+                }
+            );
             
             const bobTokens = Number(await token.balanceOf(bob));
             const cryptoBalance = Number(await liquidityPool.cryptoBalance());

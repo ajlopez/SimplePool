@@ -11,6 +11,7 @@ contract LiquidityPool {
     uint256 constant public MANTISSA = 1e18;
     
     event Deposit(address user, uint256 value, uint256 tokenAmount);
+    event BuyTokens(address user, uint256 value, uint256 tokenAmount);
     
     constructor(ERC20 _token) public {
         token = _token;
@@ -42,7 +43,7 @@ contract LiquidityPool {
         
         if (tokenDepositAmount < tokenAmount)
             token.transfer(msg.sender, tokenAmount - tokenDepositAmount);
-    }
+    }   
     
     function buyTokens() public payable {
         uint256 amount = msg.value;
@@ -54,7 +55,9 @@ contract LiquidityPool {
         tokenBalance -= tokenAmount;
         cryptoBalance += amount;
         
-        token.transfer(msg.sender, tokenAmount);
+        require(token.transfer(msg.sender, tokenAmount));
+        
+        emit BuyTokens(msg.sender, msg.value, tokenAmount);
     }
     
     function sellTokens(uint256 tokenAmount) public {
