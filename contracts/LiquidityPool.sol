@@ -44,7 +44,11 @@ contract LiquidityPool {
         
         if (tokenDepositAmount < tokenAmount)
             token.transfer(msg.sender, tokenAmount - tokenDepositAmount);
-    }   
+    }
+    
+    function getTokenPrice() public view returns (uint256) {
+        return tokenBalance * MANTISSA / cryptoBalance;
+    }
     
     function buyTokens() public payable {
         uint256 amount = msg.value;

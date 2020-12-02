@@ -58,6 +58,16 @@ contract('LiquidityPool', function (accounts) {
             assert.equal(finalPoolTokenBalance, initialPoolTokenBalance + 1000);
         });
         
+        it('token price', async function () {
+            await token.approve(liquidityPool.address, 1000, { from: alice, gasPrice: 0 });
+            
+            await liquidityPool.deposit(1000, { value: 1000000, from: alice, gasPrice: 0 });
+            
+            const tokenPrice = Number(await liquidityPool.getTokenPrice());
+            
+            assert.equal(tokenPrice, 1e15);
+        });
+        
         it('deposit rejected if less tokens are approved', async function () {
             const initialAliceTokenBalance = Number(await token.balanceOf(alice));
             const initialAliceBalance = Number(await web3.eth.getBalance(alice));
