@@ -6,25 +6,26 @@ contract('TokenLiquidityPool', function (accounts) {
     const bob = accounts[1];
     const charlie = accounts[2];
     
-    it('creation', async function() {
-        const token1 = await BasicToken.new('Token 1', 'TOK1');
-        const token2 = await BasicToken.new('Token 2', 'TOK2');
-        
-        const tokenLiquidityPool = await TokenLiquidityPool.new(token1.address, token2.address);
+    let token1;
+    let token2;
+    let tokenLiquidityPool;
+    
+    beforeEach(async function () {
+        token1 = await BasicToken.new('Token 1', 'TOK1');
+        token2 = await BasicToken.new('Token 2', 'TOK2');
 
+        await token1.transfer(alice, 1000000);
+        await token2.transfer(alice, 1000000);
+        
+        tokenLiquidityPool = await TokenLiquidityPool.new(token1.address, token2.address);
+    });
+    
+    it('creation', async function() {
         assert.equal(await tokenLiquidityPool.token1(), token1.address);
         assert.equal(await tokenLiquidityPool.token2(), token2.address);
     });
     
-    it('first deposit', async function() {
-        const token1 = await BasicToken.new('Token 1', 'TOK1');
-        const token2 = await BasicToken.new('Token 2', 'TOK2');
-        
-        await token1.transfer(alice, 1000000);
-        await token2.transfer(alice, 1000000);
-        
-        const tokenLiquidityPool = await TokenLiquidityPool.new(token1.address, token2.address);
-        
+    it('first deposit', async function() {        
         const initialAliceToken1Balance = Number(await token1.balanceOf(alice));
         const initialPoolToken1Balance = Number(await token1.balanceOf(tokenLiquidityPool.address));
         const initialAliceToken2Balance = Number(await token2.balanceOf(alice));
