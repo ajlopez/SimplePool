@@ -6,6 +6,8 @@ contract('TokenLiquidityPool', function (accounts) {
     const bob = accounts[1];
     const charlie = accounts[2];
     
+    const MANTISSA = 1e18;
+    
     let token1;
     let token2;
     let tokenLiquidityPool;
@@ -48,6 +50,17 @@ contract('TokenLiquidityPool', function (accounts) {
         
         assert.equal(Number(await tokenLiquidityPool.token1Balance()), 1000);
         assert.equal(Number(await tokenLiquidityPool.token2Balance()), 500);
+    });
+    
+    it('get token 1 price in token 2 units after first deposit', async function() {        
+        await token1.approve(tokenLiquidityPool.address, 1000, { from: alice});
+        await token2.approve(tokenLiquidityPool.address, 500, { from: alice});
+
+        await tokenLiquidityPool.deposit(1000, 500);
+        
+        const token1Price = Number(await tokenLiquidityPool.getToken1Price());
+        
+        assert.equal(token1Price, MANTISSA / 2);
     });
 });
 

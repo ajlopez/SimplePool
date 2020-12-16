@@ -9,6 +9,8 @@ contract TokenLiquidityPool {
     uint256 public token1Balance;
     uint256 public token2Balance;
     
+    uint256 constant public MANTISSA = 1e18;
+
     constructor(ERC20 _token1, ERC20 _token2) public {
         token1 = _token1;
         token2 = _token2;
@@ -20,6 +22,10 @@ contract TokenLiquidityPool {
         
         token1Balance += token1Amount;
         token2Balance += token2Amount;
+    }
+    
+    function getToken1Price() public view returns (uint256) {
+        return token2Balance * MANTISSA / token1Balance;
     }
 }
 
