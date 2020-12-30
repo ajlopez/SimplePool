@@ -15,6 +15,7 @@ and Automated Market Maker Algorithm
 - [A Deep Dive into Liquidity Pools](https://blog.zerion.io/liquidity-pools-8ac8cf8cf230)
 - [Uniswap: A Good Deal for Liquidity Providers?](https://pintail.medium.com/uniswap-a-good-deal-for-liquidity-providers-104c0b6816f2) with sample of adding liquidity
 - [Understanding Uniswap Returns](https://pintail.medium.com/understanding-uniswap-returns-cc593f3499ef)
+- [SoK: Lending Pools in Decentralized Finance](https://arxiv.org/pdf/2012.13230.pdf)
 
 ## License
 
