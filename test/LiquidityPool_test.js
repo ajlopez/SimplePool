@@ -65,7 +65,7 @@ contract('LiquidityPool', function (accounts) {
             
             const tokenPrice = Number(await liquidityPool.getTokenPrice());
             
-            assert.equal(tokenPrice, 1e15);
+            assert.equal(tokenPrice, 1e21);
         });
         
         it('deposit rejected if less tokens are approved', async function () {

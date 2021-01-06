@@ -47,7 +47,7 @@ contract LiquidityPool {
     }
     
     function getTokenPrice() public view returns (uint256) {
-        return tokenBalance * MANTISSA / cryptoBalance;
+        return cryptoBalance * MANTISSA / tokenBalance;
     }
     
     function buyTokens() public payable {
