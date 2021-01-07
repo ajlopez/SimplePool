@@ -62,5 +62,16 @@ contract('TokenLiquidityPool', function (accounts) {
         
         assert.equal(token1Price, MANTISSA / 2);
     });
+    
+    it('get token 2 price in token 1 units after first deposit', async function() {        
+        await token1.approve(tokenLiquidityPool.address, 1000, { from: alice});
+        await token2.approve(tokenLiquidityPool.address, 500, { from: alice});
+
+        await tokenLiquidityPool.deposit(1000, 500);
+        
+        const token1Price = Number(await tokenLiquidityPool.getToken2Price());
+        
+        assert.equal(token1Price, MANTISSA * 2);
+    });
 });
 

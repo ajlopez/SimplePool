@@ -27,6 +27,10 @@ contract TokenLiquidityPool {
     function getToken1Price() public view returns (uint256) {
         return token2Balance * MANTISSA / token1Balance;
     }
+    
+    function getToken2Price() public view returns (uint256) {
+        return token1Balance * MANTISSA / token2Balance;
+    }
 }
 
 
