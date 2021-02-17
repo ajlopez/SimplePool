@@ -3,6 +3,7 @@ pragma solidity ^0.6.0;
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 
 contract LiquidityPool {
+    ERC20 public poolToken;
     ERC20 public token;
     
     uint256 public tokenBalance;
@@ -14,7 +15,8 @@ contract LiquidityPool {
     event BuyTokens(address user, uint256 value, uint256 tokenAmount);
     event SellTokens(address user, uint256 value, uint256 tokenAmount);
     
-    constructor(ERC20 _token) public {
+    constructor(ERC20 _poolToken, ERC20 _token) public {
+        poolToken = _poolToken;
         token = _token;
     }
     
